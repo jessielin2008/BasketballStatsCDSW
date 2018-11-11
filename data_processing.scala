@@ -23,12 +23,12 @@ def dirExists(hdfsDirectory: String): Boolean = {
   return exists
 }
 
-if (!dirExists("/tmp/BasketballStatsWithYear/")){
+if (!dirExists("./tmp/BasketballStatsWithYear/")){
   //process files so that each line includes the year
   for (i <- 1980 to 2017){
        println(i)
        val yearStats = sc.textFile(s"/tmp/BasketballStats/leagues_NBA_$i*").repartition(3)
-       yearStats.filter(x => x.contains(",")).map(x =>  (i,x)).saveAsTextFile(s"/tmp/BasketballStatsWithYear/$i/")
+       yearStats.filter(x => x.contains(",")).map(x =>  (i,x)).saveAsTextFile(s"./tmp/BasketballStatsWithYear/$i/")
   }
 }
 
@@ -238,7 +238,7 @@ def processStatsAgeOrExperience(stats0:org.apache.spark.rdd.RDD[(Int, Array[Doub
 //********************
 
 //read in all stats
-val stats=sc.textFile("/tmp/BasketballStatsWithYear/*/*").repartition(sc.defaultParallelism)
+val stats=sc.textFile("./tmp/BasketballStatsWithYear/*/*").repartition(sc.defaultParallelism)
 
 //filter out junk rows, clean up data entry errors as well
 val cleanStats=stats.filter(x => !x.contains("FG%")).filter(x => x.contains(",")).map(x=>x.replace("*","").replace(",,",",0,").replaceAll("""\\\w+,""",","))
